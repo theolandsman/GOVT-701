@@ -1,0 +1,289 @@
+---
+title: 'GOVT 701 Lab Section 1: Math Camp Review and Catch-up'
+author: "Theodore Landsman"
+institution: "Georgetown University"
+date: "August 26, 2021"
+fontsize: 10pt
+output: 
+  beamer_presentation:
+    theme: Boadilla
+    latex_engine: xelatex
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Today
+- Math Camp Review: 
+    - objects in R
+    - dataframes in R
+    
+
+    
+- Today's Exercises
+
+    - loading data into R
+    - data preprocessing with R
+    - data summarization with R
+
+## Math Camp Review: Creating Vectors and Matrices
+- As we covered in Math Camp, in R we create vectors using `c()` command.
+
+```{r, tidy = FALSE}
+# Creating vectors
+a <- c(1, 4, 5, 3, 7)
+b <- c(3, 2, 4, 7, 1)
+c <- c(8, -2, -4)
+program.lang <- c("R", "Python", "C", "Java", "HTML")
+# Logical vector
+comparison <- (a >= 5)
+comparison
+```
+
+## Creating  Matrices
+
+- We can create matrices with `matrix()` command
+\begin{block}{Usage}
+\texttt{matrix(data, nrow, ncol, byrow)} \\
+\end{block}
+where
+    - `data`: vector of matrix elements
+    - `nrow`, `ncol`: number of rows/columns
+    - `byrow`: if `TRUE`, the matrix is filled by rows; if `FALSE`, it is filled with columns
+    
+## Creating Vectors and Matrices: Example
+
+```{r, tidy = FALSE}
+# Creating matrices
+A <- matrix(data = c(1, 4, 3, 5), nrow = 2, byrow = TRUE)
+B <- matrix(data = c(1, 4, 3, 5), nrow = 2, byrow = FALSE)
+C <- matrix(data = c(9, 7, 6, 2, 1, 3), nrow = 2, 
+            byrow = TRUE)
+D <- matrix(data = c(2, 4, 5, 7, 1, 2), nrow = 3, 
+            byrow = TRUE)
+# Print
+A
+B
+```
+
+## Creating a dataset from mixed numeric and character data
+- We can join vectors into a dataframe using the `data.frame()` command. 
+- Matrices can also be converted into dataframes using the `as.data.frame()` command. 
+```{r, tidy = FALSE}
+fake_dataset <- data.frame(program.lang,a,b, comparison)
+fake_dataset
+as.data.frame(D)
+```
+
+## Datasets We Are Using Today
+
+- Ideology score of U.S. legislators for the 117th Congress
+
+    - `HS117_members.csv`
+    - https://voteview.com/data
+
+\smallskip
+
+- Ideology score of countries using United Nations General Assembly votes
+
+    - `IdealpointestimatesAll_Mar2021.tab`
+    - https://dataverse.harvard.edu/dataset.xhtml?persistentId=hdl:1902.1/12379
+
+## Package
+
+- A collection of functions, data, and documentations which is publicly shared to enhance the functionality of R.
+
+\smallskip
+
+- Install packages if your R environment does not have them with `install.packages()` command.
+
+    - Your computer must be connected to the Internet
+    
+\smallskip
+
+- Call packages you want to use with `library()` or `require()` commands. `library()`
+
+
+## Package: Example
+
+```{r, tidy = FALSE, message = FALSE}
+# Install packages
+# install.packages("haven")
+# install.packages("readr")
+
+# Load packages
+require(haven)
+require(readr)
+```
+
+
+## Loading Dataset in R: Working Directory or Project
+
+- It is recommended that you store all the data you use in the **working directory**
+
+\smallskip
+
+- Working directory: the directory (folder) that R refers to in reading and storing information
+
+\smallskip
+
+- To check where the current working directory is, type `getwd()` in the console. To change the working directory, use `setwd()` command.
+
+\smallskip
+- Creating a new project or opening an existing project will set your working directory to whatever folder the .Rproj file is in, it will also load any files that were open when you last saved the project into your RStudio console. 
+-  Note that you cannot change your working directory if you are using the project workflow. 
+\smallskip
+
+- Example
+```{r, tidy = FALSE, eval = FALSE}
+setwd("Documents/GOVT_701_Lab/")
+```
+
+## Loading Dataset in R
+
+- How to load datasets into R's workspace depends on the file type of the data.
+
+\smallskip
+
+- Examples
+
+    - .csv (comma-separated) files: use `read.csv()` function or `read_csv()` function in `readr` package 
+    - .dta files (file format for data created with Stata): use `read.dta()` function in `foreign` package or `read_dta()` command in `haven` package
+    - .por/.sav files (file format for data created with SPSS): use `read.spss()` function in `foreign` package or `read_spss()` command in `haven` package
+    - Excel (.xlsx/.xls) files: use `read_excel()` command in `readxl` package
+
+## Loading Dataset in R: Example
+
+```{r, tidy = FALSE, message = FALSE}
+# Read .csv file
+voteview <- read_csv("HS117_members.csv")
+
+# Read tab file
+UNideal <- read_delim("IdealpointestimatesAll_Mar2021.tab")
+```
+
+## How the Data Look Like
+
+- Rows: observations
+
+- Columns: variables
+
+![Voteview dataset](voteview.png)
+
+## data.frame Object
+
+- If we load datasets using commands like `read_csv()`, the corresponding objects will be of the `data.frame` class.
+
+```{r }
+# Let's check
+class(voteview)
+```
+
+\smallskip
+
+- `data.frame` objects are two-dimensional arrays in which column vectors (= variables) are bound together, often of different types.
+
+
+## Accessing Variables in the Dataset
+
+- How to access variables in a `data.frame` object?
+
+\smallskip
+
+- To call variables within a `data.frame`, we use `$` to write `dfname$varname`.
+
+\smallskip
+
+- Since each variable is a vector, we can access its elements using `[]`
+
+\smallskip
+
+- Example
+
+```{r, tidy = FALSE}
+# 2nd - 5th observations of nominate_dim1 variable 
+voteview$nominate_dim1[c(2:5)]
+```
+
+## Accessing Variables in the Dataset (cont.)
+
+- To access elements of a variable, we can also specify logical expressions
+
+\smallskip
+
+- Example
+
+```{r, tidy = FALSE }
+# Name of House Democrats in Arizona
+voteview$bioname[voteview$chamber == "House" 
+                 & voteview$state_abbrev == "AZ"
+                 & voteview$party_code == 100]
+# UN ideal points of US 1990 & 2007
+UNideal$IdealPointAll[UNideal$ccode == 2 
+                   & (UNideal$session == 45 | UNideal$session == 62)]
+```
+
+
+## Summarizing Variables
+
+- Examining how the variables are distributed
+
+    - `summary()` for continuous variables
+    - `table()` for discrete variables
+    - `prop.table()` for tables entries in proportions
+
+\smallskip
+
+- Obtaining summary statistics
+
+    - `mean()`, `median()`, `sd()`, `quantile()`...
+
+## Summarizing Variables: Example
+
+```{r, tidy = FALSE, eval = FALSE}
+# Distribution of UN General Assembly ideal point
+summary(UNideal$IdealPointAll)
+# Number of countries per each region in 2008
+table(UNideal$unsc_region[UNideal$session == 63])
+# Crosstab of chamber and party
+table(voteview$chamber, voteview$party_code)
+```
+
+## Summarizing Variables: Example (cont.)
+
+```{r, tidy = FALSE}
+# Proportion of countries by region in 2008
+prop.table(table(UNideal$unsc_region[UNideal$year == 2008]))
+# Party composition by chamber
+prop.table(table(voteview$chamber, voteview$party_code),
+           margin = 1)
+```
+
+## Missing Values in R
+
+- In R, we represent missing values with `NA`
+
+\smallskip
+
+- Many functions (e.g., `mean()`) cannot conduct their operations if there are missing values
+
+    - To circumvent the problem, we set the `na.rm` argument to `TRUE`
+    
+\smallskip
+
+- Example
+
+```{r, tidy = FALSE, eval = FALSE}
+mean(voteview$nominate_dim1)
+mean(voteview$nominate_dim1, na.rm = TRUE)
+```
+
+## Exercises!
+
+- Create a small dataset for something in your life, think `family` where each row is a person, their relationship to you, and their age, or `food` where each item is a food item you need to pickup, its price, and what meal you plan to eat it for. 
+- Compute the mean and the standard deviation of `nominate_dim2` variable to the mean and standard deviation for `nominate_dim2`
+- Find the mean and standard deviation of `nominate_dim2` for only House members and for only Senate members. 
+
+
+
