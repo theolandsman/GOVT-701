@@ -22,7 +22,7 @@
 
 # Data from Mike Bailey's Real Stats, Chapter 5 Example Problem 3
 library(readr)
-cellphones <- read_csv("C:/Users/krolf/OneDrive/Documents/_Georgetown Fall 2020/cellphones_2012.csv")
+cellphones <- read_csv("cellphones_2012.csv")
 View(cellphones) # viewing data
 names(cellphones) # viewing names of columns (variables)
 
@@ -51,106 +51,6 @@ pvalue <- 2*pt(-abs(summary(model1)$coefficients[2, 3]), 48)
 pvalue
 
 
-# ____________________________________________________________________
-
-####
-######
-#######
-########  REGRESSION DIAGNOSTICS
-#######
-######
-####
-
-# ____________________________________________________________________
-
-##
-#### RESIDUAL VS PREDICTED PLOTS
-##
-
-# Fitted or predicted values are where a given x-value falls on the line of best fit
-# Find values by substituting a given value of x into the regression equation
-model1$fitted.values 
-
-# Residuals are the difference between the observed data and the fitted values
-# Positive values mean prediction was too low, negative values mean prediction was too high
-model1$residuals
-
-# We can use a plot of residuals versus predicted values to make sure that 
-# i) a relationship seems linear (residuals shouldn't be far from line) and 
-# ii) the residuals are homoscedastic (residuals should be spread evenly around line in a shapeless cloud) 
-# iii) there aren't extreme outliers -- but better ways to do this are DFFITS, DFBETAS, Cook's, etc.
-
-# Plot
-yhat <- model1$fitted.values
-e <- model1$residuals 
-plot(e ~ yhat) # can add graphing elements like title, etc.!
-abline(h=0,col="red") # points on the line were perfectly predicted by our model
-# In this graph we see fluting, which indicates heteroscedasticity
-# This means that the number of cell phone subscribers is a better predictor of
-# traffic fatalities for states with fewer cell phone subscribers -- our predictions
-# get worse as the number of cell subscribers in a state increases.
-
-## What should you do if you have heteroscedasticity? Don't Panic! 
-### There are easy ways to correct our regression to account for this. 
-## Note that robust standard errors are even easier in STATA, so many 
-## academics running complicated regressions will run them in STATA but plot them in R. 
-
-# Estimating robust (heteroscedasticity-consistent) standard errors 
-install.packages("AER") # -- remember, only once/installation of R
-library("AER")
-coeftest(regression1, vcov = vcovHC(regression1, type = "HC1"))
-
-##
-#### IDENTIFYING OUTLIERS
-##
-
-# DFBETAS: shows effect of deleting each observation on regression coefficients
-# Common cut-off for DFBETAS is 1, or 2/sqrt(n) for large datasets
-dfb_model1 <- dfbetas(model1) # make a new object for the DFBETAS values
-dfb_model1
-summary(dfb_model1) # view summary of DFBETAS values
-plot(dfb_model1) # plot the DFBETAS values
-abline(h = c(1, -1), col="red") # add reference lines to identify outliers
-
-# To identify the row observations that cross the DFBETAS cut-off
-# I make a new object comprised of Boolean (true/false) values
-outliers_dfb <- dfb_model1[,'cell_subscription'] > 1 | dfb_model1[,'cell_subscription'] < (-1) 
-# Better yet, we can use the "which" function to draw out those that are "true"
-outliers_dfb <- which(dfb_model1[,'cell_subscription'] > 1 | dfb_model1[,'cell_subscription'] < (-1))
-outliers_dfb # looking at outlier data rows
-cellphones$state[5] # identify state name by row number
-cellphones$state[32] 
-cellphones$state[43] 
-
-
-# DFFITS: shows effect of deleting each observation on fitted values
-# Common cut-off for DFFITS is 1, or 2/sqrt(k+1/n) for large datasets
-df_model1 <- dffits(model1) # make a new object for the DFFITS values
-df_model1
-summary(df_model1) # view summary of DFFITS values
-plot(df_model1) # plot the DFFITS values
-abline(h = c(1, -1), col="red") # add reference lines to identify outliers
-
-# To identify the row observations that cross the DFFITS cut-off
-# I make a new object that is a subset of data based on DFFITS values that cross threshold
-outliers_df <- subset(cellphones, df_model1 > 1 | df_model1 < (-1))
-View(outliers_df) # viewing new subset of outliers
-
-
-# Cook's Distance: shows effect of deleting each observation on fitted values 
-# Common cut-off for Cook's Distance is 4/n
-cook_model1 <- cooks.distance(model1) # make a new object for the Cook's values
-cook_model1
-nobs(model1) # to find number of observations
-4/50
-summary(cook_model1) # view summary of Cook's values
-plot(cook_model1) # plot the Cook's values
-abline(h = 4/50, col="red") # add reference lines to identify outliers
-
-# To identify the row observations that cross the Cook's cut-off
-# I make a new object that is a subset of data based on Cook's values that cross threshold
-outliers<-subset(cellphones, cook_model1 > (4/50)) 
-View(outliers) # viewing new subset of outliers
 
 # ____________________________________________________________________
 

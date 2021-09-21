@@ -1,0 +1,42 @@
+---
+title: 'GOVT 707 Lab 5, OLS Regression Part 2'
+author: "Theodore Landsman"
+institution: "Georgetown University"
+date: "September 16, 2021"
+fontsize: 10pt
+output: 
+  beamer_presentation: 
+    theme: Boadilla
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+# Load the data
+```
+
+## Problem Set 1 and 2 Review
+
+- This class will feature a brief exercise outlining how to show and export regressions. 
+
+- But first, I wanted to use this as an opportunity to go through some of the problems from the problem sets that people had the most conceptual issues with. 
+
+## Problem Set 1 Question 1: How to Define and Operationalize a Variable
+
+- Let's say we are interested in the *concept* of personal interactions between Professors and Undergraduates.  
+
+- We then need to think about what we can *measure.* One measure that could deal with this concept is *number of faculty*.
+
+- But having more faculty is not going to increase faculty student interactions is the number of students also rises, so we can *operationalize* our variable as student-faculty ratio. 
+
+- Specification issues: 
+
+  1) Who counts as faculty, am I a faculty member? Are adjuncts faculty members? Maybe we specify the faculty side as tenure track faculty. 
+  2) Who counts as students, do you count as students? Probably we go with something like full time undergraduate students. 
+
+## Squares
+
+- Defined at 0. 
+- No discontinuity. 
+- Plays well with other mathematical operations. 
+
