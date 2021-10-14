@@ -1,0 +1,38 @@
+---
+title: 'GOVT 707 Lab 8, Putting Everything Together'
+author: "Theodore Landsman"
+institution: "Georgetown University"
+date: "September 16, 2021"
+fontsize: 10pt
+output: slidy_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+# Load the data
+```
+
+## Steps of Data Analysis:
+
+0) Define variables
+1) Measure Data
+2) Clean and Transform Data
+3) Descriptive Analysis
+4) Define Hypotheses
+5) Test Hypotheses
+6) Collect Results
+7) Write-up
+
+## Data Analysis for Graduate Students
+
+- Most of the time as Grad Students we do not have the time or the money to collect a large amount of data for our own projects. 
+- If are collecting data at all, it is usually managing a team of undergrads doing data collection for a professor.
+- However, thinking through 0-2 is still very important in terms of gut-checking that your theory maps onto the available data and making sure *you* trust the data enough to generate externally valid conclusions. 
+
+## What this Means in Plain English
+- Make sure that the variables in your data are actually indicators for the concepts you are thinking about. 
+- Check the data to verify that its clean and in the format you want. 
+- Explore the data with descriptive tables and visualizations before nailing down your hypotheses. 
+- Start doing causal/regression analysis once you are sure what your hypothesis is and what variables you want to include. Try to avoid doing a lot of permutations of the same analysis. 
+
